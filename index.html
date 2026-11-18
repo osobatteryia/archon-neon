@@ -347,14 +347,18 @@ function arenaSnap(){
 function guestArena(a){
  const first = $('arena').hidden;
  A = Object.assign({parts:[]}, a);
- if (first){ keys.clear(); $('arena').hidden=false; fitArena(); placeTouch(); }
+ if (first){ keys.clear(); $('arena').hidden=false; placeTouch(); fitArena(); }
  draw();
  if (!guestTimer) guestTimer = setInterval(()=>{ if (!$('arena').hidden) NET.send({t:'in', i:rawInput(NET.side)}); }, 33);
 }
+const humans = () => NET ? [NET.side] : ['L','K'].filter(x=>CTRL[x]==='human');
 function placeTouch(){
  if (!isTouch) return;
- for (const s of ['L','K']){ const show = !NET || NET.side===s; $('s'+s).style.display = show?'':'none'; $('f'+s).style.display = show?'':'none'; }
- if (NET){ const s=NET.side; $('s'+s).style.left='18px'; $('s'+s).style.right='auto'; $('f'+s).style.right='28px'; $('f'+s).style.left='auto'; $('f'+s).style.bottom='40px'; }
+ const hs = humans();
+ for (const x of ['L','K']){ $('s'+x).removeAttribute('style'); $('f'+x).removeAttribute('style'); const on = hs.includes(x); $('s'+x).style.display = on?'':'none'; $('f'+x).style.display = on?'':'none'; }
+ if (hs.length===1){ const x=hs[0];
+  Object.assign($('s'+x).style, {left:'max(14px, env(safe-area-inset-left))', right:'auto', bottom:'18px', width:'124px', height:'124px'});
+  Object.assign($('f'+x).style, {right:'max(20px, env(safe-area-inset-right))', left:'auto', bottom:'34px', width:'96px', height:'96px'}); }
 }
 function wire(conn, role){
  NET = {role, side: role==='host'?'L':'K', conn, send:o=>{ try{ conn.send(o); }catch(e){} }};
@@ -597,7 +601,7 @@ function help(first){
  <li>Las piezas heridas recuperan 1 de vida por turno.</li>
  <li>Gana quien ocupe los 5 puntos de poder o elimine al rival.</li></ul>
  <h3 class="px">LA ARENA</h3>
- <ul>${isTouch?'<li>Cada jugador usa su joystick y su botón FUEGO. La Luz a la izquierda, la Oscuridad a la derecha. Mejor con el teléfono horizontal.</li>':'<li>Luz: W A S D para moverse y Espacio para atacar.</li><li>Oscuridad: flechas para moverse y Enter para atacar.</li>'}
+ <ul>${isTouch?'<li>Gira el teléfono a horizontal. Contra la computadora u online: joystick con el pulgar izquierdo y FUEGO con el derecho.</li><li>Dos jugadores en el mismo teléfono: cada uno tiene su joystick y su botón, la Luz a la izquierda y la Oscuridad a la derecha.</li>':'<li>Luz: W A S D para moverse y Espacio para atacar.</li><li>Oscuridad: flechas para moverse y Enter para atacar.</li>'}
  <li>Se ataca en la dirección en la que te mueves o apuntas. Los pilares bloquean los disparos.</li></ul>
  <h3 class="px">MODO DE COMBATE</h3>
  <div class="row"><button class="btn ${MODE==='clasico'?'Y':''}" data-mode="clasico">Clásico</button><button class="btn ${MODE==='dinamico'?'Y':''}" data-mode="dinamico">Dinámico</button></div>
@@ -637,7 +641,7 @@ function bindFire(el, s){ el.addEventListener('pointerdown', e=>{e.preventDefaul
 bindStick($('sL'),'L'); bindStick($('sK'),'K'); bindFire($('fL'),'L'); bindFire($('fK'),'K');
 if (isTouch) $('tc').hidden=false;
 
-function fitArena(){ const d=devicePixelRatio||1; const sc=Math.min(innerWidth/AW, innerHeight/AH); ac.width=AW*sc*d; ac.height=AH*sc*d; ac.style.width=AW*sc+'px'; ac.style.height=AH*sc+'px'; ax.setTransform(sc*d,0,0,sc*d,0,0); }
+function fitArena(){ const d=devicePixelRatio||1; const side = isTouch && innerWidth>innerHeight && humans().length ? 150 : 0; const sc=Math.min(Math.max(innerWidth-2*side, innerWidth*.55)/AW, innerHeight/AH); ac.width=AW*sc*d; ac.height=AH*sc*d; ac.style.width=AW*sc+'px'; ac.style.height=AH*sc+'px'; ax.setTransform(sc*d,0,0,sc*d,0,0); }
 
 let A=null;
 function fighter(p, opp, t, side, x){
@@ -659,7 +663,7 @@ function combat(a, d, t, cb){
   if (obs.every(q=>Math.hypot(q.x-o.x,q.y-o.y)>q.r+o.r+40)) obs.push(o); }
  A = {a, fL, fK, obs, shots:[], rings:[], parts:[], t, start:1.2, end:0, cb, morph: (L.type==='Cambiaformas'||K.type==='Cambiaformas') ? 1 : 0};
  if (INSTANT){ A.start=0; let n=0; while (A.fL.hp>0 && A.fK.hp>0 && n++<60*90) step(1/60); return finish(); }
- keys.clear(); $('arena').hidden=false; fitArena(); A.last=performance.now(); requestAnimationFrame(loop);
+ keys.clear(); $('arena').hidden=false; placeTouch(); fitArena(); A.last=performance.now(); requestAnimationFrame(loop);
 }
 function input(f, e){
  if (CTRL[f.side]==='ai') return aiInput(f, e);
