@@ -13,7 +13,7 @@
    COLOUR and TYPE: noche azul profundo, cian para la Luz, magenta para la Oscuridad, amarillo para el poder; Press Start 2P + Inter
    LAYOUT: barra de turno arriba, tablero, panel de la pieza debajo; en pantalla ancha el panel va al costado */
 :root{color-scheme:dark;--bg:#060A1C;--panel:#0D1530;--ink:#E6F7FF;--muted:#9FB0D8;--L:#3DE8FF;--K:#FF4FD8;--Y:#FFE14F}
-*{box-sizing:border-box;min-width:0}
+*{box-sizing:border-box;min-width:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 button{font:inherit;color:inherit;cursor:pointer}
 .px{font-family:'Press Start 2P',monospace}
@@ -46,7 +46,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .sp{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;min-height:44px;width:100%}
 .sp small{color:var(--muted);font-weight:400}
-#arena{position:fixed;inset:0;background:#02040c;z-index:10;display:flex;align-items:center;justify-content:center}
+#arena{position:fixed;inset:0;background:#02040c;z-index:10;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none}
+#arena *{touch-action:none}
 #arena[hidden]{display:none}
 #ac{display:block;touch-action:none}
 .tc{position:absolute;inset:0;pointer-events:none}
@@ -590,6 +591,13 @@ function openSpells(){
   closeOv(); act({t:'spell',id}); });
 }
 const isTouch = matchMedia('(pointer:coarse)').matches;
+/* sin zoom por doble toque ni pellizco (iOS ignora user-scalable=no) */
+{ let lastEnd=0;
+  document.addEventListener('touchend', e => { const now=Date.now(); if (now-lastEnd<350 && !e.target.closest('input')) e.preventDefault(); lastEnd=now; }, {passive:false});
+  document.addEventListener('dblclick', e => e.preventDefault(), {passive:false});
+  for (const ev of ['gesturestart','gesturechange','gestureend']) document.addEventListener(ev, e => e.preventDefault(), {passive:false});
+  document.addEventListener('touchmove', e => { if (e.touches.length>1 || !$('arena').hidden) e.preventDefault(); }, {passive:false});
+  document.addEventListener('contextmenu', e => { if (!$('arena').hidden) e.preventDefault(); }); }
 function help(first){
  ov(`<h1 class="px">ARCHON <span>NEÓN</span></h1>
  <p>La Luz contra la Oscuridad. Dos jugadores en el mismo dispositivo.</p>
