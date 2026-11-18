@@ -113,7 +113,7 @@ Si no queda ninguna pieza en el tablero, es **empate**.
 
 Todas las piezas son sprites **originales** de 12×12 píxeles ampliados a 24×24 con suavizado (*Scale2x*) y sombreado en 4 tonos (sombra, base, brillo, reflejo). El Dragón tiene un sprite propio de 24×24 dibujado a mano.
 
-### Valores actuales (versión 1.3)
+### Valores actuales (versión 1.4)
 
 Columnas: **Vida** (en el tablero; en la arena se multiplica ×3), **Daño** por golpe, **Recarga** en segundos, **Proy.** = velocidad del proyectil (1–10; en px/s = 150 + valor × 45), **Arena** = velocidad de desplazamiento en modo Dinámico (1–10), **Mov.** = tipo y alcance en el tablero.
 
@@ -249,8 +249,16 @@ En modo online cada jugador puede usar cualquiera de los dos juegos de teclas.
 |---|---|
 | `index.html` | **Todo el juego**: estilos, la librería PeerJS (minificada, primer `<script>`), los datos de los sprites y el código del juego (segundo `<script>`). |
 | `README.md` | Este documento. |
+| `apple-touch-icon.png` | Ícono de 180×180 para la pantalla de inicio del iPhone. |
+| `icon-192.png`, `icon-512.png`, `favicon.png` | Ícono en otros tamaños (Android y pestaña del navegador). |
+| `manifest.webmanifest` | Datos de la app web (nombre, colores, íconos) para instalarla en el inicio. |
 
 No hay proceso de compilación ni dependencias que instalar: se edita `index.html` y se sube.
+
+### Ícono y app en el inicio
+- El ícono es la opción **"Tablero"**: un mini tablero de 3×3 con un Caballero (Luz), un Goblin (Oscuridad) y el punto de poder amarillo al centro, sobre fondo azul noche. iOS redondea las esquinas solo.
+- Para anclarlo en iPhone: en Safari, **Compartir → Agregar a inicio**. Se abre a pantalla completa, sin las barras de Safari, con el nombre "Archon Neón".
+- Si se cambia el ícono, hay que regenerar los cuatro PNG con el mismo diseño. iOS guarda el ícono al anclarlo, así que para ver uno nuevo hay que quitar el acceso y volver a agregarlo.
 
 ### Organización del código (segundo `<script>` de `index.html`)
 Está envuelto en un bloque `{ … }` y dividido en secciones con comentarios `/* ---------- … ---------- */`:
@@ -344,6 +352,7 @@ La planilla de equilibrio original ("Tabla de equilibrio – Archon") se armó e
 | 1.1 | Modos de combate Clásico y Dinámico. Computadora (contra la computadora y simulación). Ajustes de equilibrio en 2 rondas. |
 | 1.2 | Modo online con PeerJS (salas con código y enlace). Publicación en GitHub Pages. Controles táctiles a dos manos en horizontal (joystick izquierda, FUEGO derecha). |
 | 1.3 | Bloqueo del zoom por doble toque y pellizco en iPhone. Número de versión visible en la pantalla de inicio. |
+| 1.4 | Ícono "Tablero" para la pantalla de inicio del iPhone y manifiesto de app web (se abre a pantalla completa al anclarlo). |
 
 ---
 

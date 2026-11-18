@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
 <title>Archon Neón</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Archon Neón">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#060A1C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap">
 <style>
@@ -600,7 +608,7 @@ const isTouch = matchMedia('(pointer:coarse)').matches;
   for (const el of [$('arena'), bd]) el.addEventListener('touchstart', e => { if (!e.target.closest('input,a')) e.preventDefault(); }, {passive:false});
   document.addEventListener('contextmenu', e => { if (!$('arena').hidden) e.preventDefault(); }); }
 function help(first){
- ov(`<h1 class="px">ARCHON <span>NEÓN</span></h1><p style="font-size:12px;color:var(--muted)">Versión 1.3</p>
+ ov(`<h1 class="px">ARCHON <span>NEÓN</span></h1><p style="font-size:12px;color:var(--muted)">Versión 1.4</p>
  <p>La Luz contra la Oscuridad. Dos jugadores en el mismo dispositivo.</p>
  <h3 class="px">EL TABLERO</h3>
  <ul><li>En tu turno mueves una pieza. Si entra en una casilla enemiga, pelean en la arena.</li>
